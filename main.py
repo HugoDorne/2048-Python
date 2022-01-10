@@ -2,6 +2,10 @@ from random import randint
 import numpy as np
 import keyboard
 import time
+import tkinter as tk
+from random import randint
+from tkinter import BOTH
+
 
 keys = ["left", "right", "up", "down"]
 
@@ -163,6 +167,20 @@ def down(m):
     return m
 
 
+# GUI
+def couleur(valeur):
+    """translates an rgb tuple of int to a tkinter friendly color code
+    """
+    if valeur == 0:
+        rgb = (240, 240, 240)
+        return "#%02x%02x%02x" % rgb
+    else:
+        g = 255 * (2048 - valeur) / 2048
+        b = 230 * (2048 - valeur) / 2048
+        rgb = (255, int(g), int(b))
+        return "#%02x%02x%02x" % rgb
+
+
 # Début du programme
 print('2048 sur Python \n')
 
@@ -170,11 +188,50 @@ print('2048 sur Python \n')
 partie_en_cours = 'Partie en cours'
 matrice = init()
 
+# Initilisation du GUI
+window = tk.Tk(className='2048 en Python')
+window.geometry("480x480")
+window.resizable(False, False)
+
+for i in range(4):
+    for j in range(4):
+        frame = tk.Frame(
+            master=window,
+            borderwidth=0,
+            height=100,
+            width=100
+        )
+        frame.grid(row=i, column=j, padx=10, pady=10)
+        frame.pack_propagate(False)
+        valeur = randint(0,2048)
+        label = tk.Label(master=frame, text=f"{matrice[i,j]}", bg=couleur(matrice[i,j]))
+        label.grid(row=i, column=j)
+        label.pack(fill=BOTH, expand=1)
+
+window.update()
+
 # Jeu
 while partie_en_cours == 'Partie en cours':
     print(matrice)
-    time.sleep(1)
+    time.sleep(0.5)
     matrice = jouer(matrice)
+
+    for i in range(4):
+        for j in range(4):
+            frame = tk.Frame(
+                master=window,
+                borderwidth=0,
+                height=100,
+                width=100
+            )
+            frame.grid(row=i, column=j, padx=10, pady=10)
+            frame.pack_propagate(False)
+            valeur = randint(0,2048)
+            label = tk.Label(master=frame, text=f"{matrice[i,j]}", bg=couleur(matrice[i,j]))
+            label.grid(row=i, column=j)
+            label.pack(fill=BOTH, expand=1)
+
+    window.update()
 
     partie_en_cours = test_fin_partie(matrice)
 
